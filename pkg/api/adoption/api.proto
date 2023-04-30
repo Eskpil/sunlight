@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option go_package = "github.com/eskpil/sunlight/pkg/api/adoption";
+
+message AdoptionHints {
+  string common_name = 1;
+  string country = 2;
+  string province = 3;
+  string locality = 4;
+  string organization = 5;
+  string organizational_unit = 6;
+  string email = 7;
+}
+
+message NeedsAdoptionRequest {
+  // machine_id can be found in /etc/machineid on all systemd based systems. Other operating systems probably
+  // also provide a solution for this.
+  string machine_id = 1;
+}
+
+message NeedsAdoptionResponse {
+  bool verdict = 1;
+  AdoptionHints hints = 2;
+  repeated string requirements = 3;
+  optional string error = 4;
+}
+
+message MachineMetadata {
+  // core count, bandwidth, memory etc. kernel version, os (/etc/os-release)
+}
+
+message AdoptRequest {
+  string machineid = 1;
+  MachineMetadata metadata = 2;
+  repeated string fulfilled_requirements = 3;
+  string csr = 4;
+}
+
+message AdoptResponse {
+  bool verdict = 1;
+  string certificate = 2;
+  optional string error = 3;
+}
+
+service Adoption {
+  rpc NeedsAdoption(NeedsAdoptionRequest) returns (NeedsAdoptionResponse);
+  rpc Adopt(AdoptRequest) returns (AdoptResponse);
+}

@@ -1,3 +1,5 @@
 test.db
 .idea
 go.sum
+*.pb.go
+node1

@@ -132,6 +132,9 @@ Here is a curated list of all special resources.
 
 ### Machine verification
 
+For a more detailed look into the technical implemention of the machine verification system please consult the
+[domain controller documentation](./domaincontroller.md)
+
 One of the most important features in the Sunlight system is the option to verify not only the users identity but also
 the identity of a Machine. This might not be necessary in the datacenter but for portable workstations it is a 
 requirement. This feature obviously relies on the tpm2 chip, this is where we would store the private key for both the

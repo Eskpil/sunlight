@@ -1,4 +1,4 @@
-# Sunlight: The Next-Generation Directory Service
+# Sunlight: Your next infrastructure
 
 ```mermaid
 graph TD;

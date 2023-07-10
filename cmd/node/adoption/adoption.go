@@ -2,20 +2,25 @@ package adoption
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
+	"github.com/eskpil/sunlight/cmd/node/security"
 	"github.com/eskpil/sunlight/pkg/api/adoption"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"os"
 )
 
 func discoverMachineId() (string, error) {
-	if _, err := os.Stat("/etc/machineid"); err != nil {
-		panic("/etc/machineid not found")
+	if _, err := os.Stat("/etc/machine-id"); err != nil {
+		panic("/etc/machine-id not found")
 		return "", err
 	}
 
-	machineId, err := os.ReadFile("/etc/machineid")
+	machineId, err := os.ReadFile("/etc/machine-id")
 	if err != nil {
 		return "", err
 	}
@@ -34,7 +39,7 @@ func New() (*Adopter, error) {
 		InsecureSkipVerify: true,
 	})
 
-	conn, err := grpc.Dial("local.sunlight.:2100", grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial("local.sunlight.:2001", grpc.WithTransportCredentials(creds))
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +68,29 @@ func (a *Adopter) AttemptAdoption(ctx context.Context) error {
 	if !res.Verdict {
 		return nil
 	}
+
+	log.Infof("%v", res)
+
+	csr, privkey, err := security.FindOrCreateCSR(res.GetHints())
+	if err != nil {
+		return err
+	}
+
+	csrBytes, _ := x509.CreateCertificateRequest(rand.Reader, csr, privkey)
+
+	adoptRequest := &adoption.AdoptRequest{
+		Machineid:             machineId,
+		Csr:                   string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})),
+		Metadata:              nil,
+		FulfilledRequirements: []string{"tpm2"},
+	}
+
+	adoptRes, err := a.client.Adopt(ctx, adoptRequest)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("%v", adoptRes)
 
 	return nil
 }

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/eskpil/sunlight/pkg/api/adoption";
+option go_package = "github.com/eskpil/sunlight/pkg/ccontroller/adoption";
 
 message AdoptionHints {
   string common_name = 1;

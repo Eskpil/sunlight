@@ -1,7 +1,7 @@
 package users
 
 import (
-	"github.com/eskpil/sunlight/internal/api/mycontext"
+	"github.com/eskpil/sunlight/internal/ccontroller/mycontext"
 	"github.com/eskpil/sunlight/pkg/models"
 	"github.com/labstack/echo/v4"
 	"net/http"

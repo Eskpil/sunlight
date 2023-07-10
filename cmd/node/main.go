@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	nodeAdopter "github.com/eskpil/sunlight/cmd/node/adoption"
 	"github.com/eskpil/sunlight/cmd/node/essentials"
 	"github.com/eskpil/sunlight/cmd/node/security"
 	"github.com/eskpil/sunlight/pkg/api/adoption"
@@ -32,6 +34,13 @@ func main() {
 
 	_ = csr
 	_ = privkey
+
+	adopter, err := nodeAdopter.New()
+	if err != nil {
+		log.Fatalf("could not create adopter: %v", err)
+	}
+
+	adopter.AttemptAdoption(context.Background())
 
 	log.Infof("Hello, Node!")
 }

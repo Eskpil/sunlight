@@ -8,6 +8,7 @@ will be explained.
 
 A domain controller is a combination of multiple services, most often ran as a single binary where HA is built in. Each
 instance of a domain controller is for the most part completely stateless, it relies on the core controller for state.
+This is possible since the core controller allows each domain to attach resources on itself. [ref](./corecontroller.md)
 
 | Port   	 | Service 	          |
 |----------|--------------------|

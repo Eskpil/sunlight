@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/eskpil/sunlight/pkg/api/domain";
+option go_package = "github.com/eskpil/sunlight/pkg/ccontroller/domain";
 
 service Domain {
 

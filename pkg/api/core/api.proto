@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "github.com/eskpil/sunlight/pkg/api/core";
+
+message Resource {
+  string id = 1;
+  string name = 2;
+  string version = 3;
+
+  bytes data = 4;
+
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message GetResourceRequest {
+  string name = 1;
+  string version = 2;
+}
+
+message GetResourceResponse {
+  repeated Resource resources = 1;
+  optional string error = 2;
+}
+
+message CreateResourceResponse {
+  bool verdict = 1;
+  optional string error = 2;
+}
+
+message UpdateResourceResponse {
+  bool verdict = 1;
+  optional string error = 2;
+}
+
+service Core {
+  rpc UpdateResource(Resource) returns (UpdateResourceResponse);
+  rpc CreateResource(Resource) returns (CreateResourceResponse);
+  rpc GetResource(GetResourceRequest) returns (GetResourceResponse);
+}

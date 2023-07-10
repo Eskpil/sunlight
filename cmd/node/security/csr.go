@@ -9,18 +9,21 @@ import (
 	"encoding/pem"
 	"errors"
 	"github.com/eskpil/sunlight/pkg/api/adoption"
+	log "github.com/sirupsen/logrus"
 	"os"
 )
 
 var oidEmailAddress = asn1.ObjectIdentifier{1, 2, 840, 113549, 1, 9, 1}
 
-// FindOrCreateCSR TODO: Store private key in tpm2 with a persistent handle if the system supports it and the domainc controller requires
+// FindOrCreateCSR TODO: Store private key in tpm2 with a persistent handle if the system supports it and the domain controller requires
 // it.
 func FindOrCreateCSR(hints *adoption.AdoptionHints) (*x509.CertificateRequest, *rsa.PrivateKey, error) {
 	if _, err := os.Stat(os.ExpandEnv("$SUNLIGHT_VAR_DIR/csr/request.pem")); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			return nil, nil, err
 		}
+
+		log.Infof("creating new csr")
 
 		privkey, _ := rsa.GenerateKey(rand.Reader, 4096)
 
